@@ -5,6 +5,8 @@ import * as uuid from "uuid";
 import RecipeList from "./components/RecipeList";
 import "./css/App.css";
 
+export const recipeContext = React.createContext();
+
 function App() {
   const conditionalRenderingTest = true;
 
@@ -54,15 +56,18 @@ function App() {
     setRecipes(newRecipeList);
   };
 
+  const recipeContextValue = {
+    handleRecipeAdd,
+    handleRecipeDelete,
+  };
+
   return (
     <>
       {/* HELLO FROM CONDITIONAL RENDERING */}
       {conditionalRenderingTest && <p>dssdsdsdsdfsdfsgfds</p>}
-      <RecipeList
-        recipes={recipes}
-        handleRecipeDelete={handleRecipeDelete}
-        handleRecipeAdd={handleRecipeAdd}
-      />
+      <recipeContext.Provider value={recipeContextValue}>
+        <RecipeList recipes={recipes} />
+      </recipeContext.Provider>
     </>
   );
 }
