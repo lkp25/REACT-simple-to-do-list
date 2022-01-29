@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
+
 import React from "react";
 import * as uuid from "uuid";
 import RecipeList from "./components/RecipeList";
+import "./css/App.css";
 
 function App() {
   const sampleRecipes = [
@@ -25,9 +27,29 @@ function App() {
       ],
     },
   ];
+
+  const [recipes, setRecipes] = useState(sampleRecipes);
+
+  const handleRecipeAdd = () => {
+    const newRecipe = {
+      id: uuid.v4(),
+      name: "whatevs",
+      servings: 3,
+      cooktime: "4:50",
+      instructions: "dsfgfgdfgfd",
+      ingredients: [
+        { id: 1, name: "costam", amount: 1000 },
+        { id: 2, name: "costam", amount: 102200 },
+      ],
+    };
+    console.log(newRecipe);
+    setRecipes([...recipes, newRecipe]);
+    console.log(recipes);
+  };
+
   return (
     <>
-      <RecipeList recipes={sampleRecipes}> </RecipeList>
+      <RecipeList recipes={recipes} handleRecipeAdd={handleRecipeAdd} />
     </>
   );
 }

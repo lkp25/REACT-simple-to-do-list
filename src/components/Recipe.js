@@ -9,32 +9,32 @@ export default function Recipe({
   ingredients,
 }) {
   return (
-    <>
-      <div>
-        <h3>{name}</h3>
+    <div className="recipe">
+      <div className="recipe__header ">
+        <h3 className="recipe__title">{name}</h3>
         <div>
-          <button>edit</button>
-          <button>delete\</button>
+          <button className="btn btn--primary mr-1 ">edit</button>
+          <button className="btn btn--danger">delete</button>
         </div>
       </div>
-      <div>
-        <span>Cook time:</span>
-        <span>{cooktime}</span>
+      <div className="recipe__row">
+        <span className="recipe__label">Cook time:</span>
+        <span className="recipe__value">{cooktime}</span>
       </div>
-      <div>
-        <span>Servings:</span>
-        <span>{servings}</span>
+      <div className="recipe__row">
+        <span className="recipe__label">Servings:</span>
+        <span className="recipe__value">{servings}</span>
       </div>
-      <div>
-        <span>Instructions:</span>
-        <div>{instructions}</div>
+      <div className="recipe__row">
+        <span className="recipe__label">Instructions:</span>
+        <div className="recipe__value">{instructions}</div>
       </div>
-      <div>
-        <span>Ingredients:</span>
-        <div>
+      <div className="recipe__row">
+        <span className="recipe__label">Ingredients:</span>
+        <div className="recipe__value">
           <IngredientsList ingredients={ingredients} />
         </div>
       </div>
-    </>
+    </div>
   );
 }
