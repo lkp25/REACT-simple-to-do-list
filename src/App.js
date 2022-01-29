@@ -6,6 +6,8 @@ import RecipeList from "./components/RecipeList";
 import "./css/App.css";
 
 function App() {
+  const conditionalRenderingTest = true;
+
   const sampleRecipes = [
     {
       id: 1,
@@ -47,9 +49,20 @@ function App() {
     console.log(recipes);
   };
 
+  const handleRecipeDelete = (id) => {
+    const newRecipeList = recipes.filter((rec) => rec.id !== id);
+    setRecipes(newRecipeList);
+  };
+
   return (
     <>
-      <RecipeList recipes={recipes} handleRecipeAdd={handleRecipeAdd} />
+      {/* HELLO FROM CONDITIONAL RENDERING */}
+      {conditionalRenderingTest && <p>dssdsdsdsdfsdfsgfds</p>}
+      <RecipeList
+        recipes={recipes}
+        handleRecipeDelete={handleRecipeDelete}
+        handleRecipeAdd={handleRecipeAdd}
+      />
     </>
   );
 }

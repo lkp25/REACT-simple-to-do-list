@@ -2,11 +2,13 @@ import React from "react";
 import IngredientsList from "./IngredientsList";
 
 export default function Recipe({
+  id,
   name,
   cooktime,
   servings,
   instructions,
   ingredients,
+  handleRecipeDelete,
 }) {
   return (
     <div className="recipe">
@@ -14,7 +16,14 @@ export default function Recipe({
         <h3 className="recipe__title">{name}</h3>
         <div>
           <button className="btn btn--primary mr-1 ">edit</button>
-          <button className="btn btn--danger">delete</button>
+          <button
+            onClick={() => {
+              handleRecipeDelete(id);
+            }}
+            className="btn btn--danger"
+          >
+            delete
+          </button>
         </div>
       </div>
       <div className="recipe__row">
