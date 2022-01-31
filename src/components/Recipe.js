@@ -11,17 +11,24 @@ export default function Recipe({
   ingredients,
 }) {
   // DONT FORGET this for contextAPI to work!!!
-  const value = useContext(recipeContext);
+  const { handleRecipeDelete, handleRecipeSelect } = useContext(recipeContext);
 
   return (
     <div className="recipe">
       <div className="recipe__header ">
         <h3 className="recipe__title">{name}</h3>
         <div>
-          <button className="btn btn--primary mr-1 ">edit</button>
           <button
             onClick={() => {
-              value.handleRecipeDelete(id);
+              handleRecipeSelect(id);
+            }}
+            className="btn btn--primary mr-1 "
+          >
+            edit
+          </button>
+          <button
+            onClick={() => {
+              handleRecipeDelete(id);
             }}
             className="btn btn--danger"
           >
