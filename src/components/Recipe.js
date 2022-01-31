@@ -24,7 +24,7 @@ export default function Recipe({
             }}
             className="btn btn--primary mr-1 "
           >
-            edit
+            EDIT
           </button>
           <button
             onClick={() => {

@@ -40,10 +40,6 @@ function App() {
   const selectedRecipe = recipes.find(
     (recipe) => recipe.id === selectedRecipeId
   );
-  console.log(selectedRecipe);
-  function handleRecipeSelect(id) {
-    setSelectedRecipeId(id);
-  }
   //LOAD - always load first, save later!
   useEffect(() => {
     const getRecipes = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
@@ -58,29 +54,41 @@ function App() {
   const handleRecipeAdd = () => {
     const newRecipe = {
       id: uuid.v4(),
-      name: "whatevs",
-      servings: 3,
-      cooktime: "4:50",
-      instructions: "dsfgfgdfgfd",
-      ingredients: [
-        { id: 1, name: "costam", amount: 1000 },
-        { id: 2, name: "costam", amount: 102200 },
-      ],
+      name: "",
+      servings: "",
+      cooktime: "",
+      instructions: "",
+      ingredients: [],
     };
-    console.log(newRecipe);
-    setRecipes([...recipes, newRecipe]);
-    console.log(recipes);
+
+    //USE SETTing state as a function!!!
+    setRecipes((prevRecipes) => [...prevRecipes, newRecipe]);
+    setSelectedRecipeId(newRecipe.id);
   };
 
   const handleRecipeDelete = (id) => {
+    if (selectedRecipeId != null && selectedRecipeId == id) {
+      setSelectedRecipeId(undefined);
+    }
     const newRecipeList = recipes.filter((rec) => rec.id !== id);
     setRecipes(newRecipeList);
   };
+  function handleRecipeSelect(id) {
+    setSelectedRecipeId(id);
+  }
+  // allow changing the input fields and instantly reflect changes from edition in the recipe list
+  function handleRecipeChange(id, recipe) {
+    const newRecipes = [...recipes];
+    const index = newRecipes.findIndex((r) => r.id === id);
+    newRecipes[index] = recipe;
+    setRecipes(newRecipes);
+  }
 
   const recipeContextValue = {
     handleRecipeAdd,
     handleRecipeDelete,
     handleRecipeSelect,
+    handleRecipeChange,
   };
 
   return (
