@@ -1,81 +1,104 @@
 import { useState, useRef, useEffect } from "react";
-import React from "react";
-import TodoList from "./TodoList";
-import * as uuid from "uuid";
 
-export const ThemeContext = React.createContext();
+import React from "react";
+import * as uuid from "uuid";
+import RecipeList from "./components/RecipeList";
+import "./css/App.css";
+import RecipeEdit from "./components/Recipe-edit";
+
+export const recipeContext = React.createContext();
+
+const LOCAL_STORAGE_KEY = "RECIPES";
+
+const sampleRecipes = [
+  {
+    id: 1,
+    name: "chicken",
+    servings: 3,
+    cooktime: "1:45",
+    instructions: "1.do this \n 2.And that \n 3. and add smore",
+    ingredients: [{ id: 1, name: "chicken", amount: "2pounds" }],
+  },
+  {
+    id: 2,
+    name: "prawn coctail",
+    servings: 2,
+    cooktime: "2:45",
+    instructions: "1.do this \n 2.And that \n 3. and add smore",
+    ingredients: [
+      { id: 1, name: "chicken", amount: "2pounds" },
+      { id: 2, name: "salt ", amount: "22 grains" },
+    ],
+  },
+];
 
 function App() {
-  //initialize contextAPI theme variable
-  const [theme, setTheme] = useState("red");
+  const conditionalRenderingTest = true;
+  const [selectedRecipeId, setSelectedRecipeId] = useState();
+  const [recipes, setRecipes] = useState(sampleRecipes);
 
-  // initialize the todos
-  const [todos, setTodos] = useState([]);
-  const LOCAL_STORAGE_KEY = "todos";
-
+  const selectedRecipe = recipes.find(
+    (recipe) => recipe.id === selectedRecipeId
+  );
+  //LOAD - always load first, save later!
   useEffect(() => {
-    const storedTodos = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-    if (storedTodos) setTodos(storedTodos);
+    const getRecipes = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+    if (getRecipes) setRecipes(getRecipes);
   }, []);
 
+  //SAVE
   useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(todos));
-  }, [todos]); //on evry change in todos array
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(recipes));
+  }, [recipes]);
 
-  const todoNameRef = useRef();
+  const handleRecipeAdd = () => {
+    const newRecipe = {
+      id: uuid.v4(),
+      name: "",
+      servings: "",
+      cooktime: "",
+      instructions: "",
+      ingredients: [],
+    };
 
-  //passed down to todolist to manipulate complete flag
-  const toggleTodo = (id) => {
-    const newTodos = [...todos];
-    const todo = newTodos.find((todo) => todo.id === id);
-    todo.completed = !todo.completed;
-    setTodos(newTodos);
+    //USE SETTing state as a function!!!
+    setRecipes((prevRecipes) => [...prevRecipes, newRecipe]);
+    setSelectedRecipeId(newRecipe.id);
   };
 
-  const handleDeleteTodo = (id) => {
-    const refreshedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(refreshedTodos);
+  const handleRecipeDelete = (id) => {
+    if (selectedRecipeId != null && selectedRecipeId == id) {
+      setSelectedRecipeId(undefined);
+    }
+    const newRecipeList = recipes.filter((rec) => rec.id !== id);
+    setRecipes(newRecipeList);
   };
+  function handleRecipeSelect(id) {
+    setSelectedRecipeId(id);
+  }
+  // allow changing the input fields and instantly reflect changes from edition in the recipe list
+  function handleRecipeChange(id, recipe) {
+    const newRecipes = [...recipes];
+    const index = newRecipes.findIndex((r) => r.id === id);
+    newRecipes[index] = recipe;
+    setRecipes(newRecipes);
+  }
 
-  const handleClearTodos = () => {
-    setTodos([]);
-  };
-
-  const handleAddTodo = (e) => {
-    const name = todoNameRef.current.value;
-    if (!name) return;
-    setTodos((prevTodos) => {
-      return [...prevTodos, { id: uuid.v4(), name: name, completed: false }];
-    });
-    todoNameRef.current.value = null;
+  const recipeContextValue = {
+    handleRecipeAdd,
+    handleRecipeDelete,
+    handleRecipeSelect,
+    handleRecipeChange,
   };
 
   return (
-    //ALL APP has access toThemeContext.Provider!
     <>
-      <ThemeContext.Provider value={{ backgroundColor: theme }}>
-        <TodoList
-          handleDeleteTodo={handleDeleteTodo}
-          todos={todos}
-          toggleTodo={toggleTodo}
-        ></TodoList>
-        ;
-        <input ref={todoNameRef} type="text" />
-        <button onClick={handleAddTodo}>create todo</button>
-        <button onClick={handleClearTodos}>clear todos</button>
-        <div>{todos.filter((todo) => !todo.completed).length} left to do</div>
-        {/* globally changes theme color */}
-        <button
-          onClick={() => {
-            setTheme((prevTheme) => {
-              console.log(prevTheme);
-              return prevTheme === "red" ? "blue" : "red";
-            });
-          }}
-        >
-          TOGGLE THEME
-        </button>
-      </ThemeContext.Provider>
+      {/* HELLO FROM CONDITIONAL RENDERING */}
+      {conditionalRenderingTest && <p>dssdsdsdsdfsdfsgfds</p>}
+      <recipeContext.Provider value={recipeContextValue}>
+        <RecipeList recipes={recipes} />
+        {selectedRecipe && <RecipeEdit recipe={selectedRecipe} />}
+      </recipeContext.Provider>
     </>
   );
 }
